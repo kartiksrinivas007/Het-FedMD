@@ -1,1 +1,3 @@
 env/
+__pycache__/
+digit_data/
