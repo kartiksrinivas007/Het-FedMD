@@ -1,3 +1,5 @@
 env/
 __pycache__/
 digit_data/
+test.csv
+test.py
