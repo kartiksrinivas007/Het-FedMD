@@ -12,7 +12,7 @@ from aijack.utils import NumpyDataset, accuracy_torch_dataloader
 import argparse
 from tqdm import tqdm 
 import csv
-
+import pickle
 from utils.data_loaders import *
 from utils.utils import *
 
@@ -149,6 +149,11 @@ def custom_action(api):
             writer.writerow(intra_acc + ['Intra'] + [api.epoch])
             writer.writerow(mean_inter_acc + ['Inter'] + [api.epoch])
 
+
+        api.final_acc.append({'Intra:': intra_acc, 'Inter': mean_inter_acc, 'Accuracies:': Accuracies, 'Epoch': api.epoch})
+
+
+
         #calculate mean inter and intra accs.csv
         # for acc in accuracies:
 
@@ -170,7 +175,7 @@ if __name__ == '__main__':
     parser.add_argument('--batch', type=int, default=32, help='Batch Size for Training')
     parser.add_argument('--test_batch', type=int, default=32, help='Batch Size for Testing')
     parser.add_argument('--lr', type=float, default=1e-3, help='Learning Rate')
-    parser.add_argument('--rounds', type=int, default=0, help='Communication Rounds')
+    parser.add_argument('--rounds', type=int, default=5, help='Communication Rounds')
     parser.add_argument('--percent', type=float, default=0.1, help='Percentage of Data Used')
     args = parser.parse_args()
     
@@ -206,29 +211,19 @@ if __name__ == '__main__':
     F.nll_loss,
     local_optimizers,
     validation_dataloader=client_test_loaders[0],
+    consensus_epoch=2,
+    revisit_epoch=2,
+    transfer_epoch_public=5,
+    transfer_epoch_private=5,
     num_communication=args.rounds,
     device=device,
     custom_action=custom_action,
     test_loaders=client_test_loaders
 )
     log = api.run()
+
+    with open('./acc.pkl', 'wb') as acc_pickle:
+        pickle.dump(api.final_acc, acc_pickle)
+
     
-    # Accuracies = np.ones((client_size, client_size))
-    # trained_models = api.clients
-    # print(type(trained_models[0].model))
-
-
-    # for i in tqdm(range(client_size)):
-    #     for j in tqdm(range(client_size)):
-    #         acc_i_j = accuracy_torch_dataloader(trained_models[i].model, client_test_loaders[j])
-    #         Accuracies[i][j] = acc_i_j
     
-
-    # print(Accuracies)
-
-
-    # Accuracies = []
-    # for j in tqdm(range(client_size), desc=" Evaluating accuracies for : ", position=0):
-    #     acc_vals = api.score(client_test_loaders[j], api.server_optimizer is None)
-    #     Accuracies.append(acc_vals)
-    # print(Accuracies)
