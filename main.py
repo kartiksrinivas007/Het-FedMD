@@ -115,7 +115,7 @@ def fix_seed(seed):
 
 
 def custom_action(api):
-    if(api.epoch %2 == 0):
+    if(api.epoch %2 == 0): # change evaluation frequency if you want to speed up the training
         Accuracies = []
         # field_names = ['Client 0', 'Client 1', 'Client 2', 'Client 3', 'Client 4']
         client_size = len(api.clients)
@@ -146,8 +146,8 @@ def custom_action(api):
         with open('mean.csv', 'a') as file:
             print("Writing to mean.csv")
             writer = csv.writer(file)
-            writer.writerow(intra_acc + ['Intra'] + [api.epoch])
-            writer.writerow(mean_inter_acc + ['Inter'] + [api.epoch])
+            writer.writerow(list(intra_acc) + ['Intra'] + [api.epoch])
+            writer.writerow(list(mean_inter_acc) + ['Inter'] + [api.epoch])
 
 
         api.final_acc.append({'Intra:': intra_acc, 'Inter': mean_inter_acc, 'Accuracies:': Accuracies, 'Epoch': api.epoch})
@@ -176,6 +176,9 @@ if __name__ == '__main__':
     parser.add_argument('--test_batch', type=int, default=32, help='Batch Size for Testing')
     parser.add_argument('--lr', type=float, default=1e-3, help='Learning Rate')
     parser.add_argument('--rounds', type=int, default=5, help='Communication Rounds')
+    parser.add_argument('--trounds', type=int, default=1, help='Number of transfer learning pretraining rounds')
+    parser.add_argument('--public_id', type=int, default=0, help='Dataset id of public dataset for FedMD')
+    # parser.add_argument('--acc_freq', type=int, default=1 )
     parser.add_argument('--percent', type=float, default=0.1, help='Percentage of Data Used')
     args = parser.parse_args()
     
@@ -211,10 +214,10 @@ if __name__ == '__main__':
     F.nll_loss,
     local_optimizers,
     validation_dataloader=client_test_loaders[0],
-    consensus_epoch=2,
-    revisit_epoch=2,
-    transfer_epoch_public=5,
-    transfer_epoch_private=5,
+    consensus_epoch=1,
+    revisit_epoch=1,
+    transfer_epoch_public=1,
+    transfer_epoch_private=1,
     num_communication=args.rounds,
     device=device,
     custom_action=custom_action,
