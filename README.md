@@ -13,6 +13,7 @@ Activate the environment and then
 ```
 pip install mpi4py
 pip install "pybind11[global]"
+pip install aijack
 ```
 
 Or just clone requirements.txt
