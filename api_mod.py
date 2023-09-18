@@ -49,6 +49,7 @@ class FedMDAPI(BaseFLKnowledgeDistillationAPI):
         self.custom_action = custom_action
         self.epoch = 0
         self.test_loaders = test_loaders
+        self.final_acc = []
 
     def train_server(self):
         if self.server_optimizer is None:
@@ -139,6 +140,9 @@ class FedMDAPI(BaseFLKnowledgeDistillationAPI):
 
         return logging
 
+
+    # def write_csv_head(path, header_list);
+        
     def run(self):
         logging = {
             "loss_client_local_dataset_transfer": [],
@@ -152,6 +156,8 @@ class FedMDAPI(BaseFLKnowledgeDistillationAPI):
         }
 
         logging = self.transfer_phase(logging)
+
+        # self.write_csv_head('./acc.csv', )
 
         for i in tqdm(range(1, self.num_communication + 1), desc="Training communication round : ", position=0):
             self.epoch = i
