@@ -84,7 +84,7 @@ class OfficeDataset(Dataset):
 
         label = torch.tensor(label, dtype=torch.long)
         
-        return image, label
+        return idx, image, label # add changes to return the id also
 
 
 class DomainNetDataset(Dataset):
