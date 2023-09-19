@@ -260,7 +260,7 @@ if __name__ == '__main__':
         writer.writerow(headers_mean)
     log = api.run()
 
-    with open(f'{base_path}acc.pkl', 'wb') as acc_pickle:
+    with open(f'{base_path}/acc.pkl', 'wb') as acc_pickle:
         pickle.dump(api.final_acc, acc_pickle)
 
     

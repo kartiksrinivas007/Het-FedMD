@@ -27,7 +27,8 @@ class FedMDAPI(BaseFLKnowledgeDistillationAPI):
         transfer_epoch_private=1,
         server_training_epoch=1,
         custom_action=lambda x: x,
-        test_loaders=None
+        test_loaders=None,
+        base_path='./'
     ):
         super().__init__(
             server,
@@ -50,6 +51,7 @@ class FedMDAPI(BaseFLKnowledgeDistillationAPI):
         self.epoch = 0
         self.test_loaders = test_loaders
         self.final_acc = []
+        self.base_path = base_path
 
     def train_server(self):
         if self.server_optimizer is None:
@@ -131,12 +133,12 @@ class FedMDAPI(BaseFLKnowledgeDistillationAPI):
         print(f"epoch={i} acc on public dataset: ", acc_pub)
         logging["acc_pub"].append(copy.deepcopy(acc_pub))
         # evaluation
-        if self.validation_dataloader is not None:
-            acc_val = self.score(
-                self.validation_dataloader, self.server_optimizer is None
-            )
-            print(f"epoch={i} acc on validation dataset: ", acc_val)
-            logging["acc_val"].append(copy.deepcopy(acc_val))
+        # if self.validation_dataloader is not None:
+        #     acc_val = self.score(
+        #         self.validation_dataloader, self.server_optimizer is None
+        #     )
+        #     print(f"epoch={i} acc on validation dataset: ", acc_val)
+        #     logging["acc_val"].append(copy.deepcopy(acc_val))
 
         return logging
 

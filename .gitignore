@@ -3,6 +3,7 @@ __pycache__/
 digit_data/
 test.csv
 test.py
-acc.csv
-mean.csv
-acc.pkl
+*.csv
+office/
+digits/
+data/
